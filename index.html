@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#C8AEFF">
-<title>slide 11/10 ✨</title>
+<title>✨</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Lilita+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --c-purple: #C8AEFF;
@@ -129,13 +129,29 @@
 
   .vzdycky {
     display: inline-block;
-    font-family: 'Bungee Spice', 'Lilita One', cursive;
+    font-family: 'Lilita One', cursive;
     font-size: clamp(56px, 15vw, 92px);
     line-height: 0.95;
-    text-shadow: none;
     transform: rotate(-2deg);
     margin-top: 8px;
-    /* Bungee Spice has built-in rainbow color font */
+
+    /* Rainbow fill via gradient + background-clip — works on iOS/Android/desktop */
+    background: linear-gradient(90deg,
+      #E94560 0%,
+      #FF7A1F 18%,
+      #FFC93D 35%,
+      #6BCB77 52%,
+      #3BB0F6 70%,
+      #6A3DFF 86%,
+      #C13DFF 100%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+
+    /* Dark outline matches her meme's bachelor's-degree-style chunky stroke */
+    -webkit-text-stroke: 1.5px var(--c-ink);
+    text-shadow: 0 3px 0 rgba(26,17,71,0.18);
   }
 
   .sub {
@@ -263,6 +279,34 @@
     animation: none;
   }
   .ragebait:active { background: #2d1f6b; }
+
+  /* Shake reaction when she taps */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    15%      { transform: translateX(-7px) rotate(-4deg); }
+    30%      { transform: translateX(7px)  rotate(4deg); }
+    45%      { transform: translateX(-5px) rotate(-3deg); }
+    60%      { transform: translateX(5px)  rotate(3deg); }
+    80%      { transform: translateX(-2px) rotate(-1deg); }
+  }
+  .ragebait.shake {
+    animation: shake 0.4s ease-in-out !important;
+  }
+
+  /* Floating emoji that pops out where the button was */
+  .pop-emoji {
+    position: fixed;
+    z-index: 6;
+    font-size: 36px;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    animation: popOut 1.1s ease-out forwards;
+  }
+  @keyframes popOut {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.4) rotate(0deg); }
+    20%  { opacity: 1; transform: translate(-50%, -90%) scale(1.4) rotate(-10deg); }
+    100% { opacity: 0; transform: translate(-50%, -200%) scale(1) rotate(15deg); }
+  }
 
   /* Reveal modal */
   .reveal {
@@ -400,7 +444,7 @@
   <div class="reveal-card">
     <img class="photo" src="matylda.jpg" alt="výherkyně 🏆" />
     <h2>ok vyhrála jsi 🫶</h2>
-    <p>tak mi rovnou napiš.</p>
+    <p>tak mi rovnou napiš :)))</p>
     <button class="close" id="reveal-close">tak jo</button>
   </div>
 </div>
@@ -410,8 +454,20 @@
   const rage = document.getElementById('ragebait');
   const revealEl = document.getElementById('reveal');
   const revealClose = document.getElementById('reveal-close');
-  const messages = ['fakt nemačkej', 'říkám neeee', 'poslední varování'];
+  const messages = ['fakt nemačkej 🙄', 'no DOST 😤', 'POSLEDNÍ VAROVÁNÍ 💢'];
+  const emojis   = ['🙄', '😤', '💢'];
   let taps = 0;
+
+  function spawnEmoji(emoji) {
+    const rect = rage.getBoundingClientRect();
+    const el = document.createElement('div');
+    el.className = 'pop-emoji';
+    el.textContent = emoji;
+    el.style.left = (rect.left + rect.width / 2) + 'px';
+    el.style.top  = (rect.top + rect.height / 2) + 'px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1200);
+  }
 
   function teleport() {
     const pad = 16;
@@ -420,16 +476,13 @@
     const bw = rage.offsetWidth;
     const bh = rage.offsetHeight;
     const maxX = w - bw - pad;
-    // Allow nearly full viewport, just keep a little breathing room at the bottom
     const minY = pad + 60;
     const maxY = h - bh - pad - 20;
 
-    // Where is it now?
     const rect = rage.getBoundingClientRect();
     const cx = rect.left;
     const cy = rect.top;
 
-    // Force a meaningful jump — at least 35% of viewport diagonal
     const minDist = Math.min(w, h) * 0.35;
     let x, y, dist;
     let tries = 0;
@@ -442,17 +495,22 @@
 
     rage.classList.add('moved');
     rage.style.left = x + 'px';
-    rage.style.top = y + 'px';
+    rage.style.top  = y + 'px';
   }
 
   rage.addEventListener('click', (e) => {
     e.preventDefault();
     if (taps < 3) {
-      rage.textContent = messages[taps];
-      teleport();
-      taps++;
+      spawnEmoji(emojis[taps]);
+      rage.classList.add('shake');
+      // Wait for shake to play, THEN teleport + change text
+      setTimeout(() => {
+        rage.classList.remove('shake');
+        rage.textContent = messages[taps];
+        teleport();
+        taps++;
+      }, 400);
     } else {
-      // Reveal
       revealEl.classList.add('open');
       rage.style.display = 'none';
     }
