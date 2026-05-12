@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#C8AEFF">
-<title>slide 11/10 ✨</title>
+<title>✨</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
@@ -163,15 +163,45 @@
     opacity: 0.85;
   }
 
+  .heart {
+    -webkit-text-stroke: 0;
+    font-size: clamp(56px, 15vw, 92px);
+    line-height: 0.95;
+    vertical-align: middle;
+    display: inline-block;
+  }
+
+  .moc-rad {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    font-size: clamp(13px, 3.8vw, 17px);
+    color: var(--c-ink);
+    opacity: 0.75;
+    margin-top: 8px;
+    font-style: italic;
+    transform: rotate(-1deg);
+  }
+
   .cta-text {
     font-family: 'Titan One', cursive;
-    font-size: clamp(15px, 4.5vw, 22px);
-    line-height: 1.15;
+    font-size: clamp(13px, 3.8vw, 17px);
+    line-height: 1.4;
     color: var(--c-ink);
-    margin-top: 48px;
+    margin-top: 32px;
     transform: rotate(-1deg);
-    white-space: nowrap;
     text-shadow: 0 2px 0 rgba(255, 255, 255, 0.4);
+    max-width: 30ch;
+  }
+
+  .ps {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    font-size: clamp(11px, 3vw, 13px);
+    color: var(--c-ink);
+    opacity: 0.65;
+    margin-top: 36px;
+    line-height: 1.4;
+    max-width: 32ch;
   }
 
   .options-text {
@@ -347,12 +377,12 @@
     background: #000;
   }
   .reveal-card h2 {
-    font-family: 'Titan One', cursive;
-    font-size: 26px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
     color: var(--c-blue-deep);
     margin-bottom: 10px;
-    line-height: 1.1;
-    -webkit-text-stroke: 1px var(--c-blue-deep);
+    line-height: 1.2;
   }
   .reveal-card p {
     font-size: 14px;
@@ -428,14 +458,18 @@
 </div>
 
 <main class="main">
-  <p class="preamble">ale prd, ty si čas rezervovat nemusíš, protože</p>
+  <p class="preamble">ale prd, nic si rezervovat nemusíš, protože</p>
 
   <h1>
-    na tebe si udělám čas<br>
-    <span class="vzdycky"><span style="color:#E94560">v</span><span style="color:#FF7A1F">ž</span><span style="color:#FFC93D">d</span><span style="color:#6BCB77">y</span><span style="color:#3BB0F6">c</span><span style="color:#6A3DFF">k</span><span style="color:#C13DFF">y</span></span>
+    na tebe si čas udělám<br>
+    <span class="vzdycky"><span style="color:#E94560">v</span><span style="color:#FF7A1F">ž</span><span style="color:#FFC93D">d</span><span style="color:#6BCB77">y</span><span style="color:#3BB0F6">c</span><span style="color:#6A3DFF">k</span><span style="color:#C13DFF">y</span></span> <span class="heart">🫶</span>
   </h1>
 
-  <p class="cta-text">dej vědět kdy se ti to hodí 🫶</p>
+  <p class="moc-rad">a moc rád</p>
+
+  <p class="cta-text">tak dej vědět, kdy se ti to hodí,<br>a uvidíš, jakou kravinu jsem vymyslel xdd</p>
+
+  <p class="ps">P.S.: na tuhle aktivitu bude ideální odpoledne/navečer</p>
 </main>
 
 <!-- Rage-bait button -->
