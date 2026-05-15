@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#C8AEFF">
+<title>kartičky 💜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c-purple: #C8AEFF;
+    --c-mint:   #B1E9CB;
+    --c-sky:    #BEDFF7;
+    --c-pink:   #FFC7E9;
+    --c-blue-deep: #3B82F6;
+    --c-ink: #1a1147;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: hidden;
+    font-family: 'Quicksand', system-ui, sans-serif;
+    color: var(--c-ink);
+    background: linear-gradient(135deg, var(--c-purple) 0%, var(--c-mint) 45%, var(--c-sky) 75%, var(--c-pink) 100%);
+    background-size: 200% 200%;
+    animation: shift 18s ease-in-out infinite;
+    overscroll-behavior: none;
+    touch-action: pan-y;
+  }
+
+  @keyframes shift {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+
+  body::before, body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::before {
+    background:
+      linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.4) 42%, transparent 55%),
+      linear-gradient(115deg, transparent 60%, rgba(255,255,255,0.25) 70%, transparent 80%);
+    mix-blend-mode: screen;
+  }
+
+  /* Sparkles */
+  .sparkle {
+    position: fixed;
+    z-index: 1;
+    pointer-events: none;
+    animation: twinkle 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(255,255,255,0.8));
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.4; transform: scale(0.85) rotate(0deg); }
+    50%      { opacity: 1;   transform: scale(1.15) rotate(20deg); }
+  }
+  .sp-1 { top: 8%;  left: 6%;  width: 44px; animation-delay: 0s; }
+  .sp-2 { top: 14%; right: 8%; width: 36px; animation-delay: 0.8s; }
+  .sp-3 { bottom: 18%; left: 5%; width: 32px; animation-delay: 1.4s; }
+  .sp-4 { bottom: 12%; right: 7%; width: 40px; animation-delay: 2.0s; }
+
+  /* Layout */
+  .stage {
+    position: relative;
+    z-index: 2;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: max(20px, env(safe-area-inset-top)) 18px max(20px, env(safe-area-inset-bottom));
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .header-title {
+    font-family: 'Titan One', cursive;
+    font-size: 22px;
+    color: var(--c-ink);
+    letter-spacing: -0.01em;
+    text-shadow: 0 2px 0 rgba(255,255,255,0.4);
+    transform: rotate(-1deg);
+    display: inline-block;
+  }
+
+  .progress {
+    margin-top: 6px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--c-ink);
+    opacity: 0.7;
+    letter-spacing: 0.1em;
+  }
+
+  /* Card stack */
+  .card-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 12px 0;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 340px;
+    min-height: 380px;
+    background: #fff;
+    border: 3px solid var(--c-ink);
+    border-radius: 22px;
+    box-shadow: 0 8px 0 var(--c-ink), 0 14px 30px rgba(0,0,0,0.18);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    will-change: transform, opacity;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y;
+  }
+
+  .card.dragging {
+    transition: none !important;
+  }
+
+  .card.snap-back {
+    transition: transform 0.25s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  .card-num {
+    font-family: 'Titan One', cursive;
+    font-size: 18px;
+    color: var(--c-blue-deep);
+    -webkit-text-stroke: 1px var(--c-blue-deep);
+    letter-spacing: 0.05em;
+    margin-bottom: 18px;
+  }
+
+  .card-question {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.35;
+    color: var(--c-ink);
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .card-deco {
+    position: absolute;
+    bottom: 18px;
+    right: 22px;
+    font-size: 24px;
+    opacity: 0.7;
+  }
+
+  /* End card */
+  .card.end .card-question {
+    font-family: 'Titan One', cursive;
+    font-size: 30px;
+    line-height: 1.05;
+    -webkit-text-stroke: 1px var(--c-ink);
+    text-align: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .card.end .restart {
+    margin-top: 20px;
+    align-self: center;
+    background: var(--c-blue-deep);
+    color: #fff;
+    border: 2px solid var(--c-ink);
+    border-radius: 14px;
+    padding: 12px 22px;
+    font-family: 'Titan One', cursive;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 var(--c-ink);
+    -webkit-text-stroke: 0;
+  }
+  .card.end .restart:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--c-ink);
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    padding: 0 4px;
+  }
+
+  .nav-btn {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid var(--c-ink);
+    color: var(--c-ink);
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 var(--c-ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s ease;
+    font-family: 'Titan One', cursive;
+  }
+  .nav-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 var(--c-ink);
+  }
+  .nav-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .hint {
+    flex: 1;
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--c-ink);
+    opacity: 0.55;
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+<!-- Sparkles -->
+<div class="sparkle sp-1">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 0 L14 10 L24 12 L14 14 L12 24 L10 14 L0 12 L10 10 Z" fill="#fff" stroke="#3B82F6" stroke-width="1"/>
+  </svg>
+</div>
+<div class="sparkle sp-2">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 0 L14 10 L24 12 L14 14 L12 24 L10 14 L0 12 L10 10 Z" fill="#fff" stroke="#3B82F6" stroke-width="1"/>
+  </svg>
+</div>
+<div class="sparkle sp-3">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 0 L14 10 L24 12 L14 14 L12 24 L10 14 L0 12 L10 10 Z" fill="#fff" stroke="#3B82F6" stroke-width="1"/>
+  </svg>
+</div>
+<div class="sparkle sp-4">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 0 L14 10 L24 12 L14 14 L12 24 L10 14 L0 12 L10 10 Z" fill="#fff" stroke="#3B82F6" stroke-width="1"/>
+  </svg>
+</div>
+
+<div class="stage">
+  <div class="header">
+    <div class="header-title">kartičky 💜</div>
+    <div class="progress" id="progress">01 / 19</div>
+  </div>
+
+  <div class="card-area">
+    <div class="card" id="card">
+      <span class="card-num" id="cardNum">#01</span>
+      <p class="card-question" id="cardQuestion">…</p>
+      <span class="card-deco">✨</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="nav-btn" id="prevBtn" aria-label="Předchozí">←</button>
+    <div class="hint">swajpni nebo klikni</div>
+    <button class="nav-btn" id="nextBtn" aria-label="Další">→</button>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    "Co je tvoje nejoblíbenější věc na mně?",
+    "Co tě o mně překvapilo?",
+    "Existuje něco, co ses mi bál/a říct, ale teď už to vím?",
+    "Byl/a jsi někdy náměsíčný/á? Pamatuješ si to?",
+    "Věříš v náhodu, nebo spíš v osud?",
+    "Máš nějaké místo, kam by ses chtěl/a vrátit z nostalgie? Třeba i v čase.",
+    "Máš nějaké vysněné místo na bucketlistu, kam by ses chtěl/a podívat?",
+    "Jakých malých každodenních gest, která dostáváš, si ceníš nejvíc?",
+    "Co bys dělal/a, kdybychom vyhráli v loterii?",
+    "Jaká je jedna věc, které bys chtěl/a v následujícím roce dosáhnout?",
+    "Je nějaký koníček, který bys chtěl/a zkusit?",
+    "Co by sis přál/a, abych věděl/a?",
+    "Myslíš, že tě dokážu dobře odhadnout? Nebo mi něco často uniká?",
+    "Jaké maličkosti ti dělají radost?",
+    "Jaká je podle tebe nejčastější chyba, kterou lidé v našem věku dělají?",
+    "Kdybys mě měl/a popsat třemi slovy, jaká by to byla?",
+    "Jak bys nejlépe popsal/a můj smysl pro humor?",
+    "Kdybys měl/a popsat tohle místo někomu, kdo nikdy nebyl v Praze, jakou jednou větou?",
+    "Jsi lechtivý/á?"
+  ];
+
+  const decos = ['✨', '🌙', '⭐', '💫', '🎀', '🍀', '🌸', '🪐', '🌷', '☁️', '🎈', '🌞', '🦋', '🍃', '🌻', '🪞', '🎨', '🌊', '🌹'];
+
+  const TOTAL = questions.length;
+  const card = document.getElementById('card');
+  const cardNum = document.getElementById('cardNum');
+  const cardQuestion = document.getElementById('cardQuestion');
+  const cardDeco = card.querySelector('.card-deco');
+  const progress = document.getElementById('progress');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  let index = 0;       // 0..TOTAL-1 = question; TOTAL = end card
+  let animating = false;
+
+  function render() {
+    card.classList.remove('end');
+    if (index < TOTAL) {
+      const n = String(index + 1).padStart(2, '0');
+      cardNum.textContent = '#' + n;
+      cardQuestion.textContent = questions[index];
+      cardDeco.textContent = decos[index] || '✨';
+      progress.textContent = `${n} / ${String(TOTAL).padStart(2, '0')}`;
+    } else {
+      // End card
+      card.classList.add('end');
+      cardNum.textContent = '';
+      cardDeco.textContent = '';
+      cardQuestion.innerHTML = `<span>to je všechno 💜</span><button class="restart" id="restartBtn">začít znovu</button>`;
+      progress.textContent = `${TOTAL} / ${TOTAL}  ✨ konec`;
+      document.getElementById('restartBtn').addEventListener('click', () => { index = 0; render(); });
+    }
+    prevBtn.disabled = (index === 0);
+    nextBtn.disabled = (index >= TOTAL);
+  }
+
+  function animateOut(direction, then) {
+    // direction: +1 forward (slide left), -1 backward (slide right)
+    animating = true;
+    card.classList.remove('snap-back');
+    card.style.transition = 'transform 0.28s ease-in, opacity 0.28s ease-in';
+    card.style.transform = `translateX(${direction * -120}vw) rotate(${direction * -14}deg)`;
+    card.style.opacity = '0';
+
+    setTimeout(() => {
+      then();
+      // Start from opposite side
+      card.style.transition = 'none';
+      card.style.transform = `translateX(${direction * 120}vw) rotate(${direction * 14}deg)`;
+      card.style.opacity = '0';
+
+      // Force reflow, then animate in
+      void card.offsetWidth;
+      card.style.transition = 'transform 0.32s cubic-bezier(.34,1.56,.64,1), opacity 0.28s ease-out';
+      card.style.transform = 'translateX(0) rotate(0deg)';
+      card.style.opacity = '1';
+
+      setTimeout(() => {
+        animating = false;
+      }, 320);
+    }, 280);
+  }
+
+  function next() {
+    if (animating || index >= TOTAL) return;
+    animateOut(1, () => {
+      index++;
+      render();
+    });
+  }
+
+  function prev() {
+    if (animating || index === 0) return;
+    animateOut(-1, () => {
+      index--;
+      render();
+    });
+  }
+
+  // Buttons
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'ArrowLeft') prev();
+  });
+
+  // Touch swipe
+  let startX = 0, startY = 0, currentX = 0, dragging = false, isHorizontal = false;
+
+  card.addEventListener('touchstart', e => {
+    if (animating) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    currentX = startX;
+    dragging = true;
+    isHorizontal = false;
+    card.classList.remove('snap-back');
+    card.classList.add('dragging');
+  }, { passive: true });
+
+  card.addEventListener('touchmove', e => {
+    if (!dragging || animating) return;
+    currentX = e.touches[0].clientX;
+    const dx = currentX - startX;
+    const dy = e.touches[0].clientY - startY;
+
+    if (!isHorizontal) {
+      if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+        isHorizontal = true;
+      } else if (Math.abs(dy) > 8) {
+        // Vertical scroll — abort drag
+        dragging = false;
+        card.classList.remove('dragging');
+        card.style.transform = '';
+        return;
+      }
+    }
+
+    if (isHorizontal) {
+      e.preventDefault();
+      const rot = dx * 0.04;
+      card.style.transform = `translateX(${dx}px) rotate(${rot}deg)`;
+      card.style.opacity = String(1 - Math.min(Math.abs(dx) / 400, 0.5));
+    }
+  }, { passive: false });
+
+  card.addEventListener('touchend', () => {
+    if (!dragging) return;
+    dragging = false;
+    card.classList.remove('dragging');
+    const dx = currentX - startX;
+
+    if (isHorizontal && Math.abs(dx) > 70) {
+      // Commit swipe
+      if (dx < 0 && index < TOTAL) {
+        next();
+      } else if (dx > 0 && index > 0) {
+        prev();
+      } else {
+        // Edge — snap back
+        card.classList.add('snap-back');
+        card.style.transform = '';
+        card.style.opacity = '1';
+      }
+    } else {
+      // Snap back
+      card.classList.add('snap-back');
+      card.style.transform = '';
+      card.style.opacity = '1';
+    }
+  });
+
+  // Initial render
+  render();
+</script>
+
+</body>
+</html>
