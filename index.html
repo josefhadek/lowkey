@@ -271,8 +271,8 @@
     from { opacity: 0; } to { opacity: 1; }
   }
 
-  /* Rage-bait button */
-  .ragebait {
+  /* Floating action button — links to cards */
+  .card-fab {
     position: fixed;
     bottom: 28px;
     right: 22px;
@@ -282,18 +282,15 @@
     letter-spacing: 0.02em;
     background: var(--c-ink);
     color: #fff;
-    border: none;
+    text-decoration: none;
     border-radius: 999px;
     padding: 16px 24px;
-    cursor: pointer;
     box-shadow: 0 6px 0 rgba(0,0,0,0.18);
-    transition: left 0.32s cubic-bezier(.34,1.56,.64,1),
-                top  0.32s cubic-bezier(.34,1.56,.64,1),
-                background 0.2s;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
     animation: nudge 2.4s ease-in-out infinite;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
   }
   @keyframes nudge {
     0%, 100% {
@@ -303,111 +300,12 @@
       box-shadow: 0 6px 0 rgba(0,0,0,0.18), 0 0 0 14px rgba(255,255,255,0);
     }
   }
-  .ragebait.moved {
-    bottom: auto;
-    right: auto;
-    animation: none;
-  }
-  .ragebait:active { background: #2d1f6b; }
-
-  /* Shake reaction when she taps */
-  @keyframes shake {
-    0%, 100% { transform: translateX(0) rotate(0deg); }
-    15%      { transform: translateX(-7px) rotate(-4deg); }
-    30%      { transform: translateX(7px)  rotate(4deg); }
-    45%      { transform: translateX(-5px) rotate(-3deg); }
-    60%      { transform: translateX(5px)  rotate(3deg); }
-    80%      { transform: translateX(-2px) rotate(-1deg); }
-  }
-  .ragebait.shake {
-    animation: shake 0.4s ease-in-out !important;
+  .card-fab:active {
+    transform: translateY(3px);
+    box-shadow: 0 3px 0 rgba(0,0,0,0.18);
   }
 
-  /* Floating emoji that pops out where the button was */
-  .pop-emoji {
-    position: fixed;
-    z-index: 6;
-    font-size: 36px;
-    pointer-events: none;
-    transform: translate(-50%, -50%);
-    animation: popOut 1.1s ease-out forwards;
-  }
-  @keyframes popOut {
-    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.4) rotate(0deg); }
-    20%  { opacity: 1; transform: translate(-50%, -90%) scale(1.4) rotate(-10deg); }
-    100% { opacity: 0; transform: translate(-50%, -200%) scale(1) rotate(15deg); }
-  }
-
-  /* Reveal modal */
-  .reveal {
-    position: fixed;
-    inset: 0;
-    z-index: 20;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    background: rgba(26, 17, 71, 0.65);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-  .reveal.open { display: flex; animation: fade 0.3s ease; }
-  .reveal-card {
-    background: #fff;
-    border: 3px solid var(--c-ink);
-    border-radius: 24px;
-    padding: 28px 24px 26px;
-    text-align: center;
-    max-width: 340px;
-    width: 100%;
-    box-shadow: 0 10px 0 var(--c-ink);
-    animation: pop 0.4s cubic-bezier(.34,1.56,.64,1);
-  }
-  .reveal-card .photo {
-    width: 180px;
-    height: 245px;
-    border-radius: 14px;
-    margin: 0 auto 20px;
-    border: 3px solid var(--c-ink);
-    object-fit: cover;
-    object-position: center top;
-    display: block;
-    box-shadow: 0 6px 0 var(--c-ink);
-    transform: rotate(-2.5deg);
-    background: #000;
-  }
-  .reveal-card h2 {
-    font-family: 'Quicksand', sans-serif;
-    font-weight: 700;
-    font-size: 22px;
-    color: var(--c-blue-deep);
-    margin-bottom: 10px;
-    line-height: 1.2;
-  }
-  .reveal-card p {
-    font-size: 14px;
-    color: var(--c-ink);
-    font-weight: 600;
-    line-height: 1.5;
-  }
-  .reveal-card .close {
-    margin-top: 18px;
-    background: var(--c-blue-deep);
-    color: #fff;
-    border: 2px solid var(--c-ink);
-    border-radius: 14px;
-    padding: 12px 22px;
-    font-family: 'Titan One', cursive;
-    font-size: 16px;
-    cursor: pointer;
-    box-shadow: 0 4px 0 var(--c-ink);
-  }
-  .reveal-card .close:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 0 var(--c-ink);
-  }
-
-  /* Confetti */
+  /* Confetti (still used by date pick if reused) */
   .confetti-piece {
     position: fixed;
     top: -20px;
@@ -472,94 +370,11 @@
   <p class="ps">P.S.: na tuhle aktivitu bude ideální odpoledne/navečer</p>
 </main>
 
-<!-- Rage-bait button -->
-<button class="ragebait" id="ragebait" type="button">nemačkej mě</button>
-
-<!-- Reveal modal (after rage-bait) -->
-<div class="reveal" id="reveal">
-  <div class="reveal-card">
-    <img class="photo" src="matylda.jpg" alt="výherkyně 🏆" />
-    <h2>ok vyhrála jsi 🫶</h2>
-    <p>tak mi rovnou napiš :)))</p>
-    <button class="close" id="reveal-close">tak jo</button>
-  </div>
-</div>
+<!-- Floating link to cards -->
+<a class="card-fab" href="karticky.html">👀 mrkni sem</a>
 
 <script>
-  // ---------- RAGE-BAIT BUTTON ----------
-  const rage = document.getElementById('ragebait');
-  const revealEl = document.getElementById('reveal');
-  const revealClose = document.getElementById('reveal-close');
-  const messages = ['fakt nemačkej 🙄', 'no DOST 😤', 'POSLEDNÍ VAROVÁNÍ 💢'];
-  const emojis   = ['🙄', '😤', '💢'];
-  let taps = 0;
-
-  function spawnEmoji(emoji) {
-    const rect = rage.getBoundingClientRect();
-    const el = document.createElement('div');
-    el.className = 'pop-emoji';
-    el.textContent = emoji;
-    el.style.left = (rect.left + rect.width / 2) + 'px';
-    el.style.top  = (rect.top + rect.height / 2) + 'px';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 1200);
-  }
-
-  function teleport() {
-    const pad = 16;
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    const bw = rage.offsetWidth;
-    const bh = rage.offsetHeight;
-    const maxX = w - bw - pad;
-    const minY = pad + 60;
-    const maxY = h - bh - pad - 20;
-
-    const rect = rage.getBoundingClientRect();
-    const cx = rect.left;
-    const cy = rect.top;
-
-    const minDist = Math.min(w, h) * 0.35;
-    let x, y, dist;
-    let tries = 0;
-    do {
-      x = pad + Math.random() * (maxX - pad);
-      y = minY + Math.random() * (maxY - minY);
-      dist = Math.hypot(x - cx, y - cy);
-      tries++;
-    } while (dist < minDist && tries < 12);
-
-    rage.classList.add('moved');
-    rage.style.left = x + 'px';
-    rage.style.top  = y + 'px';
-  }
-
-  rage.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (taps < 3) {
-      spawnEmoji(emojis[taps]);
-      rage.classList.add('shake');
-      // Wait for shake to play, THEN teleport + change text
-      setTimeout(() => {
-        rage.classList.remove('shake');
-        rage.textContent = messages[taps];
-        teleport();
-        taps++;
-      }, 400);
-    } else {
-      revealEl.classList.add('open');
-      rage.style.display = 'none';
-    }
-  });
-
-  revealClose.addEventListener('click', () => {
-    revealEl.classList.remove('open');
-  });
-
-  // Keep button in viewport on resize
-  window.addEventListener('resize', () => {
-    if (rage.classList.contains('moved')) teleport();
-  });
+  // Landing page is mostly static now — floating link handles navigation.
 </script>
 
 </body>
